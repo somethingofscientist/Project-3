@@ -48,7 +48,7 @@ const postBooks = async function (req, res) {
 
   }
   catch (err) {
-    return res.status(500).send({ status: false, msg: err.message })
+    return res.status(500).send({ status: false, message: err.message })
   }
 }
 
@@ -67,19 +67,19 @@ const getBooks = async function (req, res) {
     if (query.userId) {
       let id = query.userId
       let user = await userModel.findById(id)
-      if (!user) { return res.status(400).send({ status: false, msg: "No book of such user" }) }
+      if (!user) { return res.status(400).send({ status: false, message: "No book of such user" }) }
     }
 
     if (query.category) {
       const category = query.category
       const book = await bookModel.find({ category: category })
-      if (!book) { return res.status(400).send({ status: false, msg: "No book related to this category" }) }
+      if (book.length == 0) { return res.status(400).send({ status: false, msg: "No book related to this category" }) }
     }
 
     if (query.subcategory) {
       const subcategory = query.subCategory
       const book = await bookModel.find({ subcategory: subcategory })
-      if (!book) { return res.status(400).send({ status: false, msg: "No book related to this sub-category" }) }
+      if (book.length == 0) { return res.status(400).send({ status: false, msg: "No book related to this sub-category" }) }
     }
 
     let getAllBook = await bookModel.find(query).select({ _id: 1, title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1 }).sort("title")
@@ -114,21 +114,25 @@ const updateBooksByBookId = async function (req, res) {
 
     const { title, excerpt, releasedAt, ISBN } = data
 
+    if(title){
     if (!Validator.isValid(title)) return res.status(400).send({ status: false, message: "Provide valid title" })
     const duptitle = await bookModel.findOne({ title: title })
     if (duptitle) { return res.status(400).send({ status: false, message: "this title is already in use" }) }
+    }
 
     if (excerpt) {
       if (!Validator.isValid(excerpt)) return res.status(400).send({ status: false, message: "Provide valid excerpt" })
     }
 
+    
+
     // if (!Validator.isValid(ISBN)) return res.status(400).send({ status: false, message: "Provide valid ISBN" })
     // // if (ISBN.length != 13 ) return res.status(400).send({ status: false, message: "Provide valid ISBN" })
-    if (ISBN.length !== 13) return res.status(400).send({ status: false, message: "Provide valid ISBN" })
-
-
-    const dupISBN = await bookModel.findOne({ ISBN: ISBN })
-    if (dupISBN) { return res.status(400).send({ status: false, message: "this ISBN is already in use" }) }
+    if(ISBN){
+      if (ISBN.length !== 13) return res.status(400).send({ status: false, message: "Provide valid ISBN" })
+      const dupISBN = await bookModel.findOne({ ISBN: ISBN })
+      if (dupISBN) { return res.status(400).send({ status: false, message: "this ISBN is already in use" }) }
+    }
 
 
     const updatedBlog = await bookModel.findOneAndUpdate({ _id: bookId, isDeleted: false },
@@ -152,7 +156,7 @@ const deleteBooksByBookId = async function (req, res) {
     const isValidObjectId = mongoose.Types.ObjectId.isValid(BookId)
     if (!isValidObjectId) { return res.status(400).send({ status: false, msg: "Book Not Exist In DB" }) }
 
-    let Book = await bookModel.findById(BookId)
+    // let Book = await bookModel.findById(BookId)
     // if (!Book) { return res.status(400).send({ status: false, message: "fill the book ID" }) }
 
 
