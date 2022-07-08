@@ -71,9 +71,13 @@ const login = async function (req, res) {
 
       userId: user._id.toString(),
       email: user.email,
-      password: user.password
+      password: user.password,
+
+      iat: Math.floor(Date.now() / 1000),                //issued date
+      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24  //expires in 24 hr
+
     },
-      "project_3", { expiresIn: '24h' }
+      "project_3"
     );
 
     res.status(200).setHeader("x-api-key", token);
