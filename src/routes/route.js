@@ -2,28 +2,20 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController')
 const bookController = require('../controllers/bookController')
+const reviewController = require('../controllers/reviewController')
 const middleware = require('../Middleware/middleware')
 
+router.post('/register',userController.register)
+router.post('/login',userController.login)
+router.post('/books',middleware.Authenticate,middleware.Authorisation, bookController.postBooks)
+router.get('/books',middleware.Authenticate,bookController.getBooks)
+router.get('/books/:bookId',middleware.Authenticate,bookController.getBooksByBookId)
+router.put('/books/:bookId',middleware.Authenticate,middleware.Authorisation,bookController.updateBooksByBookId)
+router.delete('/books/:bookId',middleware.Authenticate,middleware.Authorisation, bookController.deleteBooksByBookId)
 
-// REGISTER API 
-router.post('/register', userController.register)
-
-// LOGIN API 
-router.post('/login', userController.login)
-
-// CREATE BOOK API
-router.post('/books', middleware.Authenticate, middleware.Authorisation, bookController.postBooks)
-
-// GET BOOK API
-router.get('/books', middleware.Authenticate, bookController.getBooks)
-
-// GET BOOK BY ID
-router.get('/books/:bookId', middleware.Authenticate, bookController.getBooksByBookId)
-
-// UPDATE BOOK API
-router.put('/books/:bookId', middleware.Authenticate, middleware.Authorisation, bookController.updateBooksByBookId)
-
-// DELETE BOOK API
-router.delete('/books/:bookId', middleware.Authenticate, middleware.Authorisation, bookController.deleteBooksByBookId)
+//review
+router.post('/books/:bookId/review',middleware.Authenticate,middleware.Authorisation, reviewController.createReview)
+router.put('/books/:bookId/review/:reviewId',middleware.Authenticate,middleware.Authorisation, reviewController.updateReview)
+router.delete('/books/:bookId/review/:reviewId',middleware.Authenticate,middleware.Authorisation, reviewController.deleteReview)
 
 module.exports = router;

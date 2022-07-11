@@ -46,7 +46,7 @@ const register = async function (req, res) {
     return res.status(201).send({ status: true, message: 'Success', data: saveData })
 
   } catch (err) {
-    return res.status(500).send({ status: false, msg: err.message })
+    return res.status(500).send({ status: false, message: err.message })
   }
 }
 
@@ -74,7 +74,7 @@ const login = async function (req, res) {
       password: user.password,
 
       iat: Math.floor(Date.now() / 1000),                //issued date
-      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24  //expires in 24 hr
+      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24  //expires in 24 hr 24 represent this
 
     },
       "project_3"
@@ -85,10 +85,10 @@ const login = async function (req, res) {
 
   }
   catch (err) {
-    return res.status(500).send({ status: false, msg: err.message })
+    return res.status(500).send({ status: false, message: err.message })
   }
 }
 
 
 module.exports.login = login
-module.exports.register = register
+module.exports.register = register  
