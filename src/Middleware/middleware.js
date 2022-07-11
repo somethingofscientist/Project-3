@@ -25,6 +25,7 @@ const Authorisation = async function (req, res, next) {
         let bookId = req.params.bookId
         if (bookId) {
             // book update or delete 
+            if (!bookId) {return res.status(400).send({status: false,message:"Id Not present" })}
             if (!Validator.isValidObjectId(bookId)) return res.status(400).send({ status: false, message: "bookId is not valid" })
             let userId = await bookModel.findOne({ _id: bookId }).select({ userId: 1, _id: 0 })
             if (!userId) return res.status(400).send({ status: false, msg: 'Please enter valid book ID' })
