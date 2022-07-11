@@ -74,7 +74,7 @@ const login = async function (req, res) {
       password: user.password,
 
       iat: Math.floor(Date.now() / 1000),                //issued date
-      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24  //expires in 24 hr 24 represent this
+      exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60  //expires in 24 hr 24 represent this
 
     },
       "project_3"

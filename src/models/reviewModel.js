@@ -18,11 +18,17 @@ const reviewSchema = new mongoose.Schema({
         required: true
     }
     ,
-    review: String,
+    review: {
+        type:String
+    },
 
     isDeleted: {
         type: Boolean,
         default: false
+    },
+    reviewedAt:{
+        type:Date,
+        required:true
     }
 
 }, { timestamps: true })
