@@ -84,8 +84,13 @@ const updateReview = async function (req, res) {
     if (reviewedBy) {
       if (!Validator.isValid(reviewedBy)) { return res.status(400).send({ status: false, message: "enter something in reviewedBy" }) }
     }
+let newData = {
+  review:review,
+  rating:rating,
+  reviewedBy :reviewedBy
+}
 
-    const reviewsData = await reviewModel.findOneAndUpdate({ _id: reviewId }, data, { new: true })
+    const reviewsData = await reviewModel.findOneAndUpdate({ _id: reviewId }, newData, { new: true })
 
     let book = await bookModel.findOne({ _id: bookId }).lean()
     book.reviewData = reviewsData
