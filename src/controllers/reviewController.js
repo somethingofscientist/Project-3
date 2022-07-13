@@ -58,12 +58,13 @@ const createReview = async function (req, res) {
 
 
 const updateReview = async function (req, res) {
+
   try {
     let data = req.body
     const { review, rating, reviewedBy } = data
 
     let bookId = req.params.bookId
-    if (!Validator.isValidObjectId(bookId)) return res.status(400).send({ status: false, message: "userId is not valid" })
+    if (!Validator.isValidObjectId(bookId)) return res.status(400).send({ status: false, message: "bookId is not valid" })
 
     let eBook = await bookModel.findOne({ _id: bookId, isDeleted: false })
     if (!eBook) { return res.status(404).send({ status: false, message: "book doesn't exist" }) }
@@ -78,12 +79,13 @@ const updateReview = async function (req, res) {
     }
 
     if (rating) {
-      if (!/[0-5]/.test(body.rating)) { return res.status(400).send({ status: false, message: "use numbers only for rating" }) }
+      if (!/[0-5]/.test(rating)) { return res.status(400).send({ status: false, message: "use numbers only for rating (0-5)" }) }
     }
 
     if (reviewedBy) {
-      if (!Validator.isValid(reviewedBy)) { return res.status(400).send({ status: false, message: "enter something in reviewedBy" }) }
+      if (!Validator.isValid(reviewedBy)) { return res.status(400).send({ status: false, message: "enter valid something in reviewedBy" }) }
     }
+
     let newData = {
       review: review,
       rating: rating,
@@ -91,10 +93,14 @@ const updateReview = async function (req, res) {
     }
 
     const reviewsData = await reviewModel.findOneAndUpdate({ _id: reviewId }, newData, { new: true })
+    // const reviewsData = await reviewModel.findOneAndUpdate({ _id: reviewId }, data, { new: true })
 
     let book = await bookModel.findOne({ _id: bookId }).lean()
+    // lean() => (help in updation of document while pushing the data)
+    // lean option tells Mongoose to skip hydrating the result documents.
+
     book.reviewData = reviewsData
-    return res.status(200).send({status: true , message: 'Success', data: book })
+    return res.status(200).send({ status: true, message: 'Success', data: book })
   }
 
   catch (err) {

@@ -1,4 +1,3 @@
-// const { validate } = require("../models/userModel")
 const userModel = require("../models/userModel")
 const Validator = require("../Validator/validation")
 const jwt = require("jsonwebtoken")
@@ -8,12 +7,10 @@ const register = async function (req, res) {
   try {
     let data = req.body
 
-    // destructing data here
-    const { title, name, phone, email, password, address } = data
+    const { title, name, phone, email, password, address } = data // <=========== destructing data here
 
-    // if the body is empty
     if (!Validator.isValidBody(data)) return res.status(400).send({ status: false, message: "Please enter details" })
-
+    
     if (!title) return res.status(400).send({ status: false, message: "Please enter title" })
     if (!Validator.isValid(title)) return res.status(400).send({ status: false, message: "Provide valid title" })
     if (title != "Mr" && title!= "Mrs" && title!= "Miss") return res.status(400).send({ status: false, message: "Provide enter Mr, Miss , Mrs only" })
@@ -71,7 +68,7 @@ const login = async function (req, res) {
 
     let token = jwt.sign({
 
-      userId: userEmail._id.toString(),
+      userId: userEmail._id.toString(), 
       email: userEmail.email,
       password: userPassword.password,
       at: Math.floor(Date.now() / 1000),                //issued date

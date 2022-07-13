@@ -5,12 +5,14 @@ const isValidObjectId = function (x) {
 }
 
 
+
 const isValid = function (x) {
     let strRegex = /^\w[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/
-    if (typeof x === 'undefined' || x === null) return false
-    if (typeof x != "string" ) return false
-    if (typeof x === 'string' && x.trim().length === 0) return false
     if (!strRegex.test(x)) return false
+    if (typeof x === 'undefined' || x === null) return false
+    if (typeof x !== "string" ) return false
+    if (typeof x == "" ) return true
+    if (typeof x === 'string' && x.trim().length === 0) return false
     return true
 }
 

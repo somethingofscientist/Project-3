@@ -13,9 +13,7 @@ const postBooks = async function (req, res) {
     if (!Validator.isValidBody(data)) return res.status(400).send({ status: false, message: "Please enter details" })
 
     if (!title) return res.status(400).send({ status: false, message: "please enter title" })
-    // this regex was removed for the any regex with the any book name and part
-    // if (!Validator.isValid(title)) return res.status(400).send({ status: false, message: "Provide valid title" })
-
+    if (!Validator.isValid(title)) return res.status(400).send({ status: false, message: "Provide valid title" })
     const dup = await bookModel.findOne({ title: title }) // <=====checking duplicate value
     if (dup) return res.status(400).send({ status: false, message: "title already exist" })
 
@@ -23,7 +21,7 @@ const postBooks = async function (req, res) {
     if (!Validator.isValid(excerpt)) return res.status(400).send({ status: false, message: "Provide valid excerpt" })
 
     if (!userId) return res.status(400).send({ status: false, message: "please enter userId" })
-    // if (!ObjectId.isValid(userId)) return res.status(400).send({ status: false, message: "please enter valid userId" })
+    if (!Validator.isValidObjectId(userId)) return res.status(400).send({ status: false, message: "please enter valid userId" })
 
     if (!ISBN) return res.status(400).send({ status: false, message: "please enter ISBN" })
     if (ISBN.length !== 13) return res.status(400).send({ status: false, message: "Provide valid ISBN" })
@@ -44,7 +42,6 @@ const postBooks = async function (req, res) {
     if (!releasedAt) return res.status(400).send({ status: false, message: "please enter date of release" })
     if (!Validator.isValidDate(releasedAt)) return res.status(400).send({ status: false, message: " wrong date format" })
 
-    console.log(data)
     const savedData = await bookModel.create(data)
     return res.status(201).send({ status: true, message: "success", data: savedData })
 
@@ -104,12 +101,13 @@ const getBooksByBookId = async function (req, res) {
 
     if (!Validator.isValidObjectId(query)) return res.status(400).send({ status: false, message: "bookId is not valid" })
     const book = await bookModel.findOne({ _id: query, isDeleted: false }).lean()
-    if (!book) {
-      return res.status(404).send({ status: false, message: "book not found" })
-    }
+    // lean() => (help in updation of document while pushing the data)
+    if (!book){ return res.status(404).send({ status: false, message: "book not found" })}
+
     const reviews = await reviewModel.find({ bookId: query })
     book.reviewsData = reviews
     res.status(200).send({ status: true, message: 'success', data: book })
+    
   } catch (err) {
     return res.status(500).send({ status: false, message: err.message })
   }
@@ -121,10 +119,6 @@ const updateBooksByBookId = async function (req, res) {
   try {
     let data = req.body
     let bookId = req.params.bookId;
-
-    if(!bookId)return res.status(400).send({status: false,message:"Id Not present" })
-    if (!Validator.isValidObjectId(bookId)) return res.status(400).send({ status: false, message:"Problem" })
-
     if (!Validator.isValidBody(data)) return res.status(400).send({ status: false, message: "Please enter details" })
 
     const { title, excerpt, releasedAt, ISBN } = data
@@ -173,7 +167,7 @@ const deleteBooksByBookId = async function (req, res) {
     let check = await bookModel.findOneAndUpdate(
       { _id: BookId }, { isDeleted: true, deletedAt: date }, { new: true })
 
-    return res.status(200).send({ status: false, message: "success", data: check })
+    return res.status(200).send({ status: true, message: "success", data: check })
   }
 
   catch (err) {
