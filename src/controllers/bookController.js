@@ -36,7 +36,7 @@ const postBooks = async function (req, res) {
     if (subcategory == 0) return res.status(400).send({ status: false, message: "please enter atleast valid one subcategory" })
 
     if (reviews) {
-      if (typeof reviews === 'string') return res.status(400).send({ status: false, message: "Provide valid reviews" })
+      if (typeof reviews === 'string') return res.status(400).send({ status: false, message: "Provide valid reviews number [0 - 5]" })
     }
 
     if (!releasedAt) return res.status(400).send({ status: false, message: "please enter date of release" })
@@ -51,7 +51,7 @@ const postBooks = async function (req, res) {
   }
 }
 
-// ==========> get books 
+// ==========> get books by query params
 const getBooks = async function (req, res) {
   try {
 

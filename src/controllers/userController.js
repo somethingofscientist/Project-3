@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken")
 
 // ===============> create user api 
 const register = async function (req, res) {
+  // our server will not stop working ==> (try catch)
   try {
     let data = req.body
 
@@ -52,7 +53,7 @@ const login = async function (req, res) {
     let data = req.body
     if (!Validator.isValidBody(data)) return res.status(400).send({ status: false, message: "Please enter details" })
 
-    const { email, password } = data
+    const { email, password } = data //<=== destructure the data here
 
     if (!email) return res.status(400).send({ status: false, message: "Please enter email" })
     if (!Validator.isValidEmail(email)) return res.status(400).send({ status: false, message: "Provide valid email" })
@@ -75,7 +76,7 @@ const login = async function (req, res) {
       exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60  //expires in 24 hr 24 represent this
 
     },
-      "project_3"
+      "project_3"     // <==== secret key
     );
 
     res.status(200).setHeader("x-api-key", token);

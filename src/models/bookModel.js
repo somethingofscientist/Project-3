@@ -3,7 +3,7 @@ const ObjectId = mongoose.Schema.Types.ObjectId
 
 const bookSchema = new mongoose.Schema({
     title: { type: String, required: true, unique: true },
-    excerpt: { type: String, required: true },
+    excerpt: { type: String, required: true }, // <===  short summary of a book is excerpt
     userId: { type: ObjectId, required: true, ref: 'User' },
     ISBN: { type: String, required: true, unique: true },
     category: { type: String, required: true },

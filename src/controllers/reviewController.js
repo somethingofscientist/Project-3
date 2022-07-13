@@ -29,6 +29,7 @@ const createReview = async function (req, res) {
     let reviewsData = await reviewModel.create(body)
 
     let inc = uniqueBookId.reviews + 1
+    // if the upper condition will not work the then line 33 will work
     uniqueBookId.reviews = inc
     await uniqueBookId.save()
 
@@ -65,12 +66,13 @@ const updateReview = async function (req, res) {
 
     let bookId = req.params.bookId
     if (!Validator.isValidObjectId(bookId)) return res.status(400).send({ status: false, message: "bookId is not valid" })
-
     let eBook = await bookModel.findOne({ _id: bookId, isDeleted: false })
     if (!eBook) { return res.status(404).send({ status: false, message: "book doesn't exist" }) }
+
+
+
     let reviewId = req.params.reviewId
     if (!Validator.isValidObjectId(reviewId)) return res.status(400).send({ status: false, message: "reviewId is not valid" })
-
     let eReview = await reviewModel.findOne({ _id: reviewId, isDeleted: false })
     if (!eReview) { return res.status(404).send({ status: false, message: "Review doesn't exist" }) }
 
@@ -93,7 +95,6 @@ const updateReview = async function (req, res) {
     }
 
     const reviewsData = await reviewModel.findOneAndUpdate({ _id: reviewId }, newData, { new: true })
-    // const reviewsData = await reviewModel.findOneAndUpdate({ _id: reviewId }, data, { new: true })
 
     let book = await bookModel.findOne({ _id: bookId }).lean()
     // lean() => (help in updation of document while pushing the data)
@@ -127,7 +128,8 @@ const deleteReview = async function (req, res) {
     const validReviewId = await reviewModel.findOne({ _id: reviewId, isDeleted: false })
     if (!validReviewId) { return res.status(404).send({ status: false, message: "review does not exist" }) }
 
-    if (bookId != validReviewId.bookId) { return res.status(400).send({ status: false, message: "this review is not for this book" }) }
+    if (bookId != validReviewId.bookId) 
+    { return res.status(400).send({ status: false, message: "this review is not for this book" }) }
 
     await reviewModel.findOneAndUpdate({ _id: reviewId }, { isDeleted: true }, { new: true })
 
